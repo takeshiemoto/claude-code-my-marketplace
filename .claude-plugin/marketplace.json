@@ -1,0 +1,16 @@
+{
+  "name": "my-marketplace",
+  "owner": {
+    "name": "takeshiemoto"
+  },
+  "metadata": {
+    "description": "takeshiemoto 個人用 Claude Code プラグインマーケットプレイス",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "my",
+      "source": "./plugins/my"
+    }
+  ]
+}
