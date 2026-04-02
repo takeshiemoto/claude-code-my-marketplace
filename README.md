@@ -4,6 +4,15 @@ Personal Claude Code plugin marketplace.
 
 ## Installation
 
+### Via Claude Code CLI
+
+```sh
+/plugin marketplace add takeshiemoto/claude-code-my-marketplace
+/plugin install my@takeshiemoto-claude-code-my-marketplace
+```
+
+### Manual
+
 Add to your `~/.claude/settings.json`:
 
 ```json
@@ -15,14 +24,7 @@ Add to your `~/.claude/settings.json`:
         "repo": "takeshiemoto/claude-code-my-marketplace"
       }
     }
-  }
-}
-```
-
-Then enable the plugin:
-
-```json
-{
+  },
   "enabledPlugins": {
     "my@my-marketplace": true
   }
@@ -48,5 +50,4 @@ Code review based on personal review guidelines.
 ```sh
 pnpm install
 pnpm run lint:md
-pnpm run lint:md:fix
 ```
