@@ -188,7 +188,7 @@ git diff <base>...HEAD
 - 取得 hook を呼んだコンポーネント内で `data?.` のまま UI 分岐やイベント処理まで行う
 - 「落ちないようにする」目的の optional chaining
 
-### カスタムHook設計
+### カスタムHook設計（CQRS）
 
 #### Read/Write分離
 
