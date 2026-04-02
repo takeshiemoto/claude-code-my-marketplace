@@ -9,7 +9,6 @@ takeshiemoto 個人用の Claude Code プラグインマーケットプレイス
 ```sh
 pnpm install
 pnpm run lint:md
-pnpm run lint:md:fix
 ```
 
 ## アーキテクチャ
