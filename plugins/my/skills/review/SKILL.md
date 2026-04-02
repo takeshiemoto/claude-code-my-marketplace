@@ -188,6 +188,28 @@ git diff <base>...HEAD
 - 取得 hook を呼んだコンポーネント内で `data?.` のまま UI 分岐やイベント処理まで行う
 - 「落ちないようにする」目的の optional chaining
 
+### カスタムHook設計
+
+#### Read/Write分離
+
+- 一つのHookにデータ取得と変更操作を混在させない
+- Read Hook（`useXxx`）はデータと取得状態を返す
+- Write Hook（`useCreateXxx`, `useUpdateXxx`, `useDeleteXxx`）はアクション（関数）を返す
+- Hookの戻り値がデータなのかアクションなのか、型と命名から一目でわかる状態を保つ
+
+#### 一方向データフロー
+
+- カスタムHookでもデータの流れは一方向に保つ
+- Read Hookの結果をWrite Hookの入力に暗黙的に結合しない
+- コンポーネントがRead HookとWrite Hookを個別に呼び、データフローをコンポーネント側で明示的に組み立てる
+
+#### 変更後の再フェッチ
+
+- create/update/delete後の再フェッチを各write Hookが個別に実行しない
+- SWRの`mutate`をキーベースで使い、再検証のトリガーを集約する
+- 複数の変更操作が同じデータの再フェッチを必要とする場合、Mediator的に一箇所で制御する
+- write Hookは「変更の成功」だけを返し、再フェッチの責務を持たない
+
 ## 修正案を出す前の必須確認
 
 修正案を提案する前に、必ず以下を実行する。
