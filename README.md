@@ -8,7 +8,7 @@ Personal Claude Code plugin marketplace.
 
 ```sh
 /plugin marketplace add takeshiemoto/claude-code-my-marketplace
-/plugin install my@takeshiemoto-claude-code-my-marketplace
+/plugin install takeshiemoto@takeshiemoto-claude-code-my-marketplace
 ```
 
 ### Manual
@@ -26,7 +26,7 @@ Add to your `~/.claude/settings.json`:
     }
   },
   "enabledPlugins": {
-    "my@my-marketplace": true
+    "takeshiemoto@my-marketplace": true
   }
 }
 ```
@@ -35,14 +35,14 @@ Add to your `~/.claude/settings.json`:
 
 | Plugin | Description |
 | --- | --- |
-| `my` | Personal toolkit |
+| `takeshiemoto` | Personal toolkit |
 
-### my:review
+### takeshiemoto:review
 
-Code review based on personal review guidelines.
+Parallel code review with specialized sub-agents.
 
 ```sh
-/my:review --base <base-branch>
+/takeshiemoto:review --base <base-branch>
 ```
 
 ## Development
