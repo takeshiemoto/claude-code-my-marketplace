@@ -1,6 +1,8 @@
 ---
 name: structure-reviewer
 description: コード差分の構造・設計原則をレビューする。構造レビューのサブエージェントとして使用する。
+model: claude-opus-4-6
+color: "#E74C3C"
 disallowedTools: Write, Edit, Agent
 ---
 
