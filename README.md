@@ -31,6 +31,13 @@ Add to your `~/.claude/settings.json`:
 }
 ```
 
+## Uninstallation
+
+```sh
+claude plugin uninstall takeshiemoto@takeshiemoto-marketplace
+claude plugin marketplace remove takeshiemoto-marketplace
+```
+
 ## Plugins
 
 | Plugin | Description |
