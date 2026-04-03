@@ -7,8 +7,8 @@ Personal Claude Code plugin marketplace.
 ### Via Claude Code CLI
 
 ```sh
-/plugin marketplace add takeshiemoto/claude-code-takeshiemoto-marketplace
-/plugin install takeshiemoto@takeshiemoto-claude-code-takeshiemoto-marketplace
+claude plugin marketplace add takeshiemoto/claude-code-my-marketplace
+claude plugin install takeshiemoto@takeshiemoto-marketplace
 ```
 
 ### Manual
@@ -21,7 +21,7 @@ Add to your `~/.claude/settings.json`:
     "takeshiemoto-marketplace": {
       "source": {
         "source": "github",
-        "repo": "takeshiemoto/claude-code-takeshiemoto-marketplace"
+        "repo": "takeshiemoto/claude-code-my-marketplace"
       }
     }
   },
