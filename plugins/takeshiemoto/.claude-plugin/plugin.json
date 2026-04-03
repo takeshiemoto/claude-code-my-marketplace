@@ -1,6 +1,5 @@
 {
   "name": "takeshiemoto",
   "version": "0.2.0",
-  "description": "個人用プラグイン",
-  "agents": "./agents/"
+  "description": "個人用プラグイン"
 }
