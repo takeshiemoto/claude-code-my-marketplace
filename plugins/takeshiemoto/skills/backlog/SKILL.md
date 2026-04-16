@@ -1,6 +1,6 @@
 ---
 name: takeshiemoto:backlog
-description: 現在の作業コンテキスト(タスク/目的/現状/次)を claude-code-histories に時系列MDで吐き出す。「backlog」等の依頼時、または /takeshiemoto:backlog で呼び出す。
+description: 現在の作業コンテキスト(タスク/目的/現状)を claude-code-histories に時系列MDで吐き出す。「backlog」等の依頼時、または /takeshiemoto:backlog で呼び出す。
 user-invocable: true
 allowed-tools: Bash, Write
 ---
@@ -39,9 +39,6 @@ allowed-tools: Bash, Write
 
 ## 現状
 <いまどこまで進んだか>
-
-## 次
-<次のアクション>
 ```
 
 記述ルール:
@@ -64,11 +61,6 @@ allowed-tools: Bash, Write
   - 試行して失敗・断念したアプローチとその理由
   - 途中で下した判断とその根拠
   - 現時点のブロッカー・未解決の問題
-- **次のアクション** — 以下の観点で具体的に記述する:
-  - 会話中に明言された次ステップ
-  - 会話の流れから論理的に導かれる次ステップ（「推論」と明記する必要はない）
-  - 依存関係・前提条件があれば併記する
-  - 何も導けない場合のみ `(未定)`
 
 ### Step 2: slug 生成
 
