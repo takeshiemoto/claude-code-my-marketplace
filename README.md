@@ -8,7 +8,7 @@ Personal Claude Code plugin marketplace.
 
 ```sh
 claude plugin marketplace add takeshiemoto/claude-code-my-marketplace
-claude plugin install takeshiemoto@takeshiemoto-marketplace
+claude plugin install core@takeshiemoto-marketplace
 ```
 
 ### Manual
@@ -26,7 +26,7 @@ Add to your `~/.claude/settings.json`:
     }
   },
   "enabledPlugins": {
-    "takeshiemoto@takeshiemoto-marketplace": true
+    "core@takeshiemoto-marketplace": true
   }
 }
 ```
@@ -34,7 +34,7 @@ Add to your `~/.claude/settings.json`:
 ## Uninstallation
 
 ```sh
-claude plugin uninstall takeshiemoto@takeshiemoto-marketplace
+claude plugin uninstall core@takeshiemoto-marketplace
 claude plugin marketplace remove takeshiemoto-marketplace
 ```
 
@@ -42,14 +42,14 @@ claude plugin marketplace remove takeshiemoto-marketplace
 
 | Plugin | Description |
 | --- | --- |
-| `takeshiemoto` | Personal toolkit |
+| `core` | Personal toolkit |
 
-### takeshiemoto:review
+### core:mo
 
-Parallel code review with specialized sub-agents.
+Open a Markdown file in the browser via the `mo` command.
 
 ```sh
-/takeshiemoto:review --base <base-branch>
+/core:mo <path>
 ```
 
 ## Development

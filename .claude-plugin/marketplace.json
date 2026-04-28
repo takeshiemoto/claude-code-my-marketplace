@@ -4,13 +4,13 @@
     "name": "takeshiemoto"
   },
   "metadata": {
-    "description": "takeshiemoto 個人用 Claude Code プラグインマーケットプレイス",
-    "version": "0.8.0"
+    "description": "takeshiemoto's personal Claude Code arsenal",
+    "version": "0.10.0"
   },
   "plugins": [
     {
-      "name": "takeshiemoto",
-      "source": "./plugins/takeshiemoto"
+      "name": "core",
+      "source": "./plugins/core"
     }
   ]
 }

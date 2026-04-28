@@ -1,6 +1,6 @@
 ---
-name: takeshiemoto:mo
-description: 引数で渡されたMarkdownファイルを mo コマンドでブラウザに開く。「moで開いて」「mo」等の依頼時、または /takeshiemoto:mo <path> で呼び出す。
+name: core:mo
+description: 引数で渡されたMarkdownファイルを mo コマンドでブラウザに開く。「moで開いて」「mo」等の依頼時、または /core:mo <path> で呼び出す。
 user-invocable: true
 allowed-tools: Bash
 ---
@@ -12,7 +12,7 @@ allowed-tools: Bash
 ## 使用方法
 
 ```sh
-/takeshiemoto:mo <markdownファイルのパス>
+/core:mo <markdownファイルのパス>
 ```
 
 引数で渡されたパスをそのまま `mo --open` に渡す。複数ファイル指定にも対応する。
