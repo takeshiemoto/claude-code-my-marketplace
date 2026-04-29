@@ -1,5 +1,5 @@
 ---
-description: E2Eテストを全パスかつCodexがSHIP_OK判定するまで自動修正ループを回す
+description: E2Eテストを全パスし最終レビューでSHIP_OK判定が出るまで自動修正ループを回す
 argument-hint: [E2E実行コマンド。省略時は package.json から自動検出]
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep, Task, SlashCommand
 ---
@@ -12,42 +12,51 @@ allowed-tools: Bash, Read, Edit, Write, Glob, Grep, Task, SlashCommand
 
 ## Step 1: プリフライトチェック（依存プラグインの存在確認）
 
-ralph-loop / codex / coderabbit が揃っているか確認します。以下を順に試し、**1つでも欠けていれば直ちに停止してユーザーにインストール手順を提示**します。
+ralph-loop は **必須**。レビュアプラグイン（codex / coderabbit）は任意で、両方無ければ Claude 自身のレビューにフォールバックします。
 
-1. ralph-loop の存在確認（`/ralph-loop` が利用可能か試行）
-   - 不在なら:
+`${REVIEWERS}` を空配列で初期化し、以下の順で確認していく。
+
+1. **ralph-loop の存在確認**（`/ralph-loop` が利用可能か試行）
+   - 不在なら **直ちに停止**してインストール手順を提示:
 
      ```text
      ralph-loop プラグインが見つかりません。以下を実行してください:
        /plugin install ralph-loop@anthropics/claude-plugins-official
      ```
 
-   - 提示後、**ループ起動はせず終了**
-
-2. codex の存在確認（`/codex:setup` 相当を試行）
-   - 不在なら:
+2. **codex の存在確認**（`/codex:setup` 相当を試行）
+   - 利用可能なら `${REVIEWERS}` に `codex` を追加
+   - 不在なら以下を表示して続行（停止しない）:
 
      ```text
-     codex プラグインが見つかりません。以下を実行してください:
+     codex プラグインが見つかりません（任意）。使用したい場合:
        /plugin install codex@openai/codex-plugin-cc
        /codex:setup
      ```
 
-3. coderabbit の存在確認
-   - 不在なら:
+3. **coderabbit の存在確認**
+   - 利用可能なら `${REVIEWERS}` に `coderabbit` を追加
+   - 不在なら以下を表示して続行（停止しない）:
 
      ```text
-     coderabbit プラグインが見つかりません。以下を実行してください:
+     coderabbit プラグインが見つかりません（任意）。使用したい場合:
        /plugin install coderabbit@coderabbitai/coderabbit-claude-code
      ```
 
-依存プラグインがすべて揃っていることを確認できたら次へ進みます。
+4. **フォールバック判定**
+   - `${REVIEWERS}` が空（codex も coderabbit も無い）なら以下を表示し、`${REVIEWERS}` に `claude-fallback` を追加:
+
+     ```text
+     レビュアプラグインが利用できないため、Claude 自身のレビューにフォールバックします。
+     ```
 
 ## Step 2: 認証確認
 
-- `/codex:setup` を実行して Codex の認証状態を確認
-- CodeRabbit の認証状態をプラグインの推奨手順で確認
-- いずれかで未認証なら、ユーザーに認証手順を案内して停止
+- `${REVIEWERS}` に `codex` が含まれる場合: `/codex:setup` を実行して認証状態を確認
+- `${REVIEWERS}` に `coderabbit` が含まれる場合: プラグインの推奨手順で認証状態を確認
+- 未認証のものがあれば、ユーザーに認証手順を案内して停止
+
+`claude-fallback` のみの場合は認証不要なので Step 3 へ。
 
 ## Step 3: 作業ディレクトリ準備
 
@@ -95,7 +104,9 @@ ralph-loop / codex / coderabbit が揃っているか確認します。以下を
 プロンプト本体は `${CLAUDE_PLUGIN_ROOT}/prompts/fix-e2e-loop.md` にあります。
 
 1. Read ツールで `${CLAUDE_PLUGIN_ROOT}/prompts/fix-e2e-loop.md` を読む
-2. 内容の `{{E2E_COMMAND}}` を Step 4 で確定した `${E2E_COMMAND}` に置換
+2. 内容のプレースホルダを置換:
+   - `{{E2E_COMMAND}}` → Step 4 で確定した `${E2E_COMMAND}`
+   - `{{REVIEWERS}}` → Step 1 で確定した `${REVIEWERS}` をカンマ区切り文字列にしたもの（例: `codex,coderabbit` / `coderabbit` / `claude-fallback`）
 3. SlashCommand ツールで以下を実行:
 
    ```text

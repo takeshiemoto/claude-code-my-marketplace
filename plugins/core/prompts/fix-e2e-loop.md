@@ -1,8 +1,9 @@
 # fix-e2e-loop
 
-あなたはE2Eテストを全パスさせ、かつCodexの最終レビューでSHIP_OK判定を受けるまで作業を続ける自動修正エージェントです。
+あなたはE2Eテストを全パスさせ、かつ最終レビューでSHIP_OK判定を受けるまで作業を続ける自動修正エージェントです。
 
 E2E実行コマンド: `{{E2E_COMMAND}}`
+利用可能なレビュア: `{{REVIEWERS}}` （カンマ区切り。`codex` / `coderabbit` / `claude-fallback` の組み合わせ。`claude-fallback` のみの場合はあなた自身が差分レビューを行う）
 
 ## 各イテレーションで必ず最初に行うこと
 
@@ -10,7 +11,7 @@ E2E実行コマンド: `{{E2E_COMMAND}}`
 
 - `.loop/state.md`: 現在のフェーズ（DIAGNOSE / FIX / REVIEW / DONE / BLOCKED）と直近の作業内容
 - `.loop/diagnosis.md`: 各失敗テストの真因記録
-- `.loop/rejections.md`: Codex/CodeRabbit指摘で却下したもの
+- `.loop/rejections.md`: レビュー指摘で却下したもの
 - `.loop/followups.md`: スコープ外として後回しにしたもの
 - `.loop/progress.md`: イテレーションごとのサマリ
 
@@ -64,22 +65,23 @@ E2E実行コマンド: `{{E2E_COMMAND}}`
 2. 修正内容を `.loop/progress.md` に追記
 3. フェーズを DIAGNOSE に戻し、次イテレーションで再実行確認
 
-### Phase: REVIEW — Codex と CodeRabbit のレビュー
+### Phase: REVIEW — レビューと採否判定
 
-全E2Eが通過した直後にここに来る。レビューを並列起動して結果を判定する。
+全E2Eが通過した直後にここに来る。`{{REVIEWERS}}` に応じて利用可能なレビュアを起動し、結果を arbiter に判定させる。
 
-1. **レビュー並列起動**
-   - `/codex:review --background` を起動
-   - `/coderabbit:review --background` を起動（CodeRabbitのコマンド名は実環境のプラグインに従う）
+1. **レビュア起動**
+   - `{{REVIEWERS}}` に `codex` が含まれる場合: `/codex:review --background` を起動
+   - `{{REVIEWERS}}` に `coderabbit` が含まれる場合: `/coderabbit:review --background` を起動（コマンド名は実環境のプラグインに従う）
+   - `{{REVIEWERS}}` が `claude-fallback` のみの場合: あなた自身が `git diff` を読み、E2E修正の文脈で重要な指摘を列挙する。各指摘について `ファイル:行 / 内容 / severity (low|medium|high|critical) / 推奨修正` を含める。
 
-2. **完了待ち**
-   - `/codex:status` をポーリング、完了したら `/codex:result` で結果取得
-   - CodeRabbit も同様に結果取得
+2. **完了待ち / 結果取得**
+   - codex: `/codex:status` をポーリング、完了したら `/codex:result` で結果取得
+   - coderabbit: 同様にプラグインの仕様に従って結果取得
+   - claude-fallback: 自身の出力を結果テキストとして扱う
 
 3. **採否判定（arbiter サブエージェント）**
    Task ツールで `arbiter` サブエージェントを起動し、以下を渡す:
-   - Codex のレビュー結果テキスト
-   - CodeRabbit のレビュー結果テキスト
+   - 利用可能な各レビュアの結果テキスト（不在のものは「N/A」と明記）
    - 直近の修正差分（`git diff` の出力）
 
    arbiter からの返答は各指摘の判定リスト:
@@ -95,12 +97,12 @@ E2E実行コマンド: `{{E2E_COMMAND}}`
    - ACCEPT/FIX が1件以上ある場合:
      - フェーズを FIX に戻す
      - 次イテレーションで修正実施 → 再びE2E実行 → 再びREVIEW
-   - ACCEPT/FIX が0件 かつ Codex出力に critical/high の指摘なし:
+   - ACCEPT/FIX が0件 かつ 利用したレビュア結果に critical/high の未対応指摘なし:
      - フェーズを DONE に進める
 
 ### Phase: DONE — 完了報告
 
-1. `.loop/report.md` を以下の構成で作成:
+1. `.loop/report.md` を以下の構成で作成（利用しなかったレビュア節は省く）:
 
    ```markdown
    # E2E Fix Loop 完了レポート
@@ -108,8 +110,11 @@ E2E実行コマンド: `{{E2E_COMMAND}}`
    ## 修正したテストと真因
    （`.loop/diagnosis.md` から要約）
 
-   ## Codex 最終レビュー要約
-   ## CodeRabbit 最終レビュー要約
+   ## 利用したレビュア
+   {{REVIEWERS}}
+
+   ## 各レビュアの最終要約
+   （利用したレビュアごとに節を作る。例: Codex / CodeRabbit / Claude フォールバック）
 
    ## 却下した指摘と根拠
    （`.loop/rejections.md` から）
@@ -133,7 +138,7 @@ E2E実行コマンド: `{{E2E_COMMAND}}`
 - 仕様変更が要因で人間判断が必要
 - インフラ起因でテスト自体が動かない
 - 「テストを緩める」以外の修正案がない
-- 同じCodex指摘が3反復連続で出て収束しない
+- 同じレビュー指摘が3反復連続で出て収束しない
 - 想定外の依存追加が必要（package.json/Cargo.toml/go.mod の新規依存）
 
 なお ralph-loop の `--max-iterations` でも上限がかかる。max到達時はその時点の状態を report.md に書いて素直に終了する。
@@ -168,7 +173,7 @@ N
 ### .loop/rejections.md
 
 ```markdown
-## 指摘 (iter N, source: codex|coderabbit)
+## 指摘 (iter N, source: codex|coderabbit|claude-fallback)
 - 内容: <要約>
 - 判定: REJECT | WONTFIX
 - 理由: <根拠。設計のどこと整合/矛盾するか、既存慣習との関係>
