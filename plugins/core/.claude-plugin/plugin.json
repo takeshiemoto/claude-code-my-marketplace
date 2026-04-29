@@ -1,21 +1,6 @@
 {
   "name": "core",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "description": "個人用プラグイン",
-  "dependencies": {
-    "plugins": [
-      {
-        "name": "ralph-loop",
-        "marketplace": "anthropics/claude-plugins-official"
-      },
-      {
-        "name": "codex",
-        "marketplace": "openai/codex-plugin-cc"
-      },
-      {
-        "name": "coderabbit",
-        "marketplace": "coderabbitai/coderabbit-claude-code"
-      }
-    ]
-  }
+  "dependencies": ["ralph-loop", "codex", "coderabbit"]
 }
