@@ -3,7 +3,7 @@
 あなたはE2Eテストを全パスさせ、かつ最終レビューでSHIP_OK判定を受けるまで作業を続ける自動修正エージェントです。
 
 E2E実行コマンド: `{{E2E_COMMAND}}`
-利用可能なレビュア: `{{REVIEWERS}}` （カンマ区切り。`codex` / `coderabbit` / `claude-fallback` の組み合わせ。`claude-fallback` のみの場合はあなた自身が差分レビューを行う）
+利用可能なレビュア: `{{REVIEWERS}}` （カンマ区切り。`pr-review-toolkit` は必ず含まれる。`codex` / `coderabbit` は環境により有無あり）
 
 ## 各イテレーションで必ず最初に行うこと
 
@@ -67,21 +67,21 @@ E2E実行コマンド: `{{E2E_COMMAND}}`
 
 ### Phase: REVIEW — レビューと採否判定
 
-全E2Eが通過した直後にここに来る。`{{REVIEWERS}}` に応じて利用可能なレビュアを起動し、結果を arbiter に判定させる。
+全E2Eが通過した直後にここに来る。`{{REVIEWERS}}` のレビュアを起動し、結果を arbiter に判定させる。
 
 1. **レビュア起動**
+   - `pr-review-toolkit`（必須）: SlashCommand で `/pr-review-toolkit:review-pr all` を実行
    - `{{REVIEWERS}}` に `codex` が含まれる場合: `/codex:review --background` を起動
    - `{{REVIEWERS}}` に `coderabbit` が含まれる場合: `/coderabbit:review --background` を起動（コマンド名は実環境のプラグインに従う）
-   - `{{REVIEWERS}}` が `claude-fallback` のみの場合: あなた自身が `git diff` を読み、E2E修正の文脈で重要な指摘を列挙する。各指摘について `ファイル:行 / 内容 / severity (low|medium|high|critical) / 推奨修正` を含める。
 
 2. **完了待ち / 結果取得**
+   - pr-review-toolkit: SlashCommand 実行結果のテキストを取得
    - codex: `/codex:status` をポーリング、完了したら `/codex:result` で結果取得
    - coderabbit: 同様にプラグインの仕様に従って結果取得
-   - claude-fallback: 自身の出力を結果テキストとして扱う
 
 3. **採否判定（arbiter サブエージェント）**
    Task ツールで `arbiter` サブエージェントを起動し、以下を渡す:
-   - 利用可能な各レビュアの結果テキスト（不在のものは「N/A」と明記）
+   - 各レビュアの結果テキスト（不在のものは「N/A」と明記）
    - 直近の修正差分（`git diff` の出力）
 
    arbiter からの返答は各指摘の判定リスト:
@@ -114,7 +114,7 @@ E2E実行コマンド: `{{E2E_COMMAND}}`
    {{REVIEWERS}}
 
    ## 各レビュアの最終要約
-   （利用したレビュアごとに節を作る。例: Codex / CodeRabbit / Claude フォールバック）
+   （利用したレビュアごとに節を作る。例: pr-review-toolkit / Codex / CodeRabbit）
 
    ## 却下した指摘と根拠
    （`.loop/rejections.md` から）
@@ -173,7 +173,7 @@ N
 ### .loop/rejections.md
 
 ```markdown
-## 指摘 (iter N, source: codex|coderabbit|claude-fallback)
+## 指摘 (iter N, source: pr-review-toolkit|codex|coderabbit)
 - 内容: <要約>
 - 判定: REJECT | WONTFIX
 - 理由: <根拠。設計のどこと整合/矛盾するか、既存慣習との関係>
