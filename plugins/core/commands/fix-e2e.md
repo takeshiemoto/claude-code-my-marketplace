@@ -12,10 +12,7 @@ allowed-tools: Bash, Read, Edit, Write, Glob, Grep, Task, SlashCommand
 
 ## Step 1: プリフライトチェック（依存プラグインの存在確認）
 
-`plugin.json` の `dependencies.plugins` で ralph-loop / codex / coderabbit は自動インストールされる前提ですが、
-古いClaude Codeでのインストール、ユーザーによる手動無効化、認証未完了などのケースに備え、起動前に必ず確認します。
-
-以下を順に試し、**1つでも欠けていれば直ちに停止してユーザーにインストール手順を提示**します。
+ralph-loop / codex / coderabbit が揃っているか確認します。以下を順に試し、**1つでも欠けていれば直ちに停止してユーザーにインストール手順を提示**します。
 
 1. ralph-loop の存在確認（`/ralph-loop` が利用可能か試行）
    - 不在なら:

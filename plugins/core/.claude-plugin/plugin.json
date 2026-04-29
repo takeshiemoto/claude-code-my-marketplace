@@ -1,6 +1,5 @@
 {
   "name": "core",
-  "version": "0.18.1",
-  "description": "個人用プラグイン",
-  "dependencies": ["ralph-loop", "codex", "coderabbit"]
+  "version": "0.18.2",
+  "description": "個人用プラグイン"
 }
