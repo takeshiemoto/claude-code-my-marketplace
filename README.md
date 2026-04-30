@@ -52,6 +52,16 @@ Open a Markdown file in the browser via the `mo` command.
 /core:mo <path>
 ```
 
+### core:coderabbit-loop
+
+Run an autonomous CodeRabbit feedback loop on a PR. Each round: collect findings → judge via `core:arbiter` subagent → patch (with type-check / lint gating) and commit → reply to rejected comments → re-review → check convergence.
+
+```sh
+/core:coderabbit-loop <PR#> [--base <branch>] [--max-rounds <N>] [--dry-run]
+```
+
+Persists state under `.coderabbit-loop/<run-id>/` and never pushes; the user decides when to push.
+
 ## Development
 
 ```sh
